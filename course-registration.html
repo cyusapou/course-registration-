@@ -258,6 +258,49 @@
       color: var(--accent);
       font-weight: 600;
     }
+
+    .select-all-item {
+      margin-bottom: 16px;
+    }
+
+    .select-all-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .select-all-item label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--check-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+
+    .select-all-item label:hover {
+      border-color: rgba(0,198,255,0.35);
+      background: rgba(0,198,255,0.04);
+    }
+
+    .select-all-item input:checked + label {
+      border-color: var(--accent);
+      background: rgba(0,198,255,0.07);
+      box-shadow: 0 0 0 1px rgba(0,198,255,0.15);
+    }
+
+    .select-all-item input:checked + label .check-box {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .select-all-item input:checked + label .check-box svg {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -272,6 +315,19 @@
       <div class="section-label">Available Courses</div>
 
       <form id="regForm">
+        <div class="select-all-item">
+          <input type="checkbox" id="selectAll" />
+          <label for="selectAll">
+            <span class="check-box">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="course-info">
+              <span class="course-name">Select All Courses</span>
+            </span>
+          </label>
+        </div>
         <div class="course-grid">
 
           <div class="course-item">
@@ -415,14 +471,21 @@
     const checkboxes = document.querySelectorAll('input[name="courses"]');
     const countEl = document.getElementById('count');
     const submitBtn = document.getElementById('submitBtn');
+    const selectAll = document.getElementById('selectAll');
 
     function updateCount() {
       const checked = document.querySelectorAll('input[name="courses"]:checked').length;
       countEl.textContent = checked;
       submitBtn.disabled = checked === 0;
+      selectAll.checked = checked === checkboxes.length;
     }
 
     checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
+
+    selectAll.addEventListener('change', function() {
+      checkboxes.forEach(cb => cb.checked = this.checked);
+      updateCount();
+    });
 
     document.getElementById('regForm').addEventListener('submit', function(e) {
       e.preventDefault();
