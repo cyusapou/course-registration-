@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0f1a;
+      --surface: #111827;
+      --border: #1e2d40;
+      --accent: #00c6ff;
+      --accent2: #0072ff;
+      --text: #e8edf5;
+      --muted: #6b7a99;
+      --check-bg: #0d1b2e;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,114,255,0.15), transparent),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(0,198,255,0.08), transparent);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      padding: 32px 36px 24px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+    }
+
+    .label-tag {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(0,198,255,0.08);
+      border: 1px solid rgba(0,198,255,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .card-header p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .card-body {
+      padding: 28px 36px 32px;
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 480px) {
+      .course-grid { grid-template-columns: 1fr; }
+      .card-header, .card-body { padding-left: 22px; padding-right: 22px; }
+    }
+
+    .course-item {
+      position: relative;
+    }
+
+    .course-item input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .course-item label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 14px;
+      background: var(--check-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+
+    .course-item label:hover {
+      border-color: rgba(0,198,255,0.35);
+      background: rgba(0,198,255,0.04);
+    }
+
+    .course-item input:checked + label {
+      border-color: var(--accent);
+      background: rgba(0,198,255,0.07);
+      box-shadow: 0 0 0 1px rgba(0,198,255,0.15);
+    }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 2px solid var(--border);
+      border-radius: 5px;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .course-item input:checked + label .check-box {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .check-box svg {
+      display: none;
+    }
+
+    .course-item input:checked + label .check-box svg {
+      display: block;
+    }
+
+    .course-info { flex: 1; }
+
+    .course-code {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .course-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .course-credits {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border: none;
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(0,114,255,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.08);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover::after { opacity: 1; }
+    .submit-btn:active { transform: scale(0.98); }
+
+    .submit-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .counter {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .counter span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <div class="label-tag">Enrollment</div>
+      <h1>Course Registration</h1>
+      <p>Select the courses you wish to enroll in for this semester.</p>
+    </div>
+
+    <div class="card-body">
+      <div class="section-label">Available Courses</div>
+
+      <form id="regForm">
+        <div class="course-grid">
+
+          <div class="course-item">
+            <input type="checkbox" id="c1" name="courses" value="CS101" />
+            <label for="c1">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS101</span>
+                <span class="course-name">Intro to Programming</span>
+                <span class="course-credits">3 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c2" name="courses" value="CS201" />
+            <label for="c2">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS201</span>
+                <span class="course-name">Data Structures</span>
+                <span class="course-credits">3 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c3" name="courses" value="CS301" />
+            <label for="c3">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS301</span>
+                <span class="course-name">Web Development</span>
+                <span class="course-credits">4 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c4" name="courses" value="CS302" />
+            <label for="c4">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS302</span>
+                <span class="course-name">Database Systems</span>
+                <span class="course-credits">3 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c5" name="courses" value="CS401" />
+            <label for="c5">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS401</span>
+                <span class="course-name">Software Engineering</span>
+                <span class="course-credits">4 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c6" name="courses" value="CS402" />
+            <label for="c6">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS402</span>
+                <span class="course-name">Algorithms & Complexity</span>
+                <span class="course-credits">3 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c7" name="courses" value="CS403" />
+            <label for="c7">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS403</span>
+                <span class="course-name">Computer Networks</span>
+                <span class="course-credits">3 Credits</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="course-item">
+            <input type="checkbox" id="c8" name="courses" value="CS501" />
+            <label for="c8">
+              <span class="check-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="course-info">
+                <span class="course-code">CS501</span>
+                <span class="course-name">Machine Learning</span>
+                <span class="course-credits">4 Credits</span>
+              </span>
+            </label>
+          </div>
+
+        </div>
+
+        <div class="divider"></div>
+        <div class="counter">Selected: <span id="count">0</span> course(s)</div>
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>Submit Registration</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[name="courses"]');
+    const countEl = document.getElementById('count');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function updateCount() {
+      const checked = document.querySelectorAll('input[name="courses"]:checked').length;
+      countEl.textContent = checked;
+      submitBtn.disabled = checked === 0;
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateCount));
+
+    document.getElementById('regForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const selected = [...document.querySelectorAll('input[name="courses"]:checked')]
+        .map(cb => cb.value);
+      console.log('Registered courses:', selected);
+      // Hook your team's logic here
+    });
+  </script>
+</body>
+</html>
